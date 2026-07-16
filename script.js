@@ -2,15 +2,18 @@
   const menuToggle = document.getElementById("menuToggle");
   const mainMenu = document.getElementById("mainMenu");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const desktopNavQuery = window.matchMedia("(min-width: 901px)");
 
   const setMenuOpen = (open) => {
     if (!menuToggle || !mainMenu) return;
     mainMenu.classList.toggle("open", open);
     menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.classList.toggle("menu-open", open);
   };
 
   if (menuToggle && mainMenu) {
-    menuToggle.addEventListener("click", () => {
+    menuToggle.addEventListener("click", (event) => {
+      event.stopPropagation();
       setMenuOpen(!mainMenu.classList.contains("open"));
     });
 
@@ -28,6 +31,27 @@
       if (menuToggle.contains(target) || mainMenu.contains(target)) return;
       setMenuOpen(false);
     });
+
+    const onNavBreakpointChange = (event) => {
+      if (event.matches) setMenuOpen(false);
+    };
+
+    if (typeof desktopNavQuery.addEventListener === "function") {
+      desktopNavQuery.addEventListener("change", onNavBreakpointChange);
+    } else if (typeof desktopNavQuery.addListener === "function") {
+      desktopNavQuery.addListener(onNavBreakpointChange);
+    }
+
+    window.addEventListener(
+      "orientationchange",
+      () => {
+        // Keep layout clean after rotate
+        setTimeout(() => {
+          if (desktopNavQuery.matches) setMenuOpen(false);
+        }, 120);
+      },
+      { passive: true }
+    );
   }
 
   const navLinks = document.querySelectorAll(".menu a");
@@ -54,7 +78,7 @@
           revealObserver.unobserve(entry.target);
         });
       },
-      { threshold: 0.14, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -8% 0px" }
     );
 
     revealNodes.forEach((node) => revealObserver.observe(node));
@@ -65,7 +89,6 @@
 
   if (form && formStatus) {
     form.addEventListener("submit", (event) => {
-      // When not on Netlify, provide a clear professional message instead of a silent failure.
       const isLocal =
         window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1" ||
@@ -88,44 +111,19 @@
   const ctx = mapCanvas.getContext("2d");
   if (!ctx) return;
 
-  if (prefersReducedMotion) {
-    const staticPoints = [
-      [140, 110],
-      [260, 80],
-      [420, 150],
-      [530, 95],
-      [700, 140],
-      [840, 200],
-      [680, 260],
-      [460, 280],
-      [280, 245],
-      [170, 210],
-    ];
+  const logicalWidth = 1000;
+  const logicalHeight = 430;
 
-    ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-    ctx.strokeStyle = "rgba(159, 178, 194, 0.12)";
-    for (let x = 0; x < mapCanvas.width; x += 55) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, mapCanvas.height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < mapCanvas.height; y += 45) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(mapCanvas.width, y);
-      ctx.stroke();
-    }
+  const syncCanvasSize = () => {
+    const displayWidth = Math.max(1, Math.floor(mapCanvas.clientWidth || logicalWidth));
+    const ratio = displayWidth / logicalWidth;
+    const displayHeight = Math.max(1, Math.floor(logicalHeight * ratio));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    staticPoints.forEach(([x, y], index) => {
-      const colors = ["#5db9ff", "#ff7f66", "#46d6b1"];
-      ctx.fillStyle = colors[index % 3];
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    return;
-  }
+    mapCanvas.width = Math.floor(displayWidth * dpr);
+    mapCanvas.height = Math.floor(displayHeight * dpr);
+    ctx.setTransform(dpr * ratio, 0, 0, dpr * ratio, 0, 0);
+  };
 
   const points = [
     { x: 140, y: 110 },
@@ -140,6 +138,41 @@
     { x: 170, y: 210 },
   ];
 
+  const drawStatic = () => {
+    syncCanvasSize();
+    ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+    ctx.strokeStyle = "rgba(159, 178, 194, 0.12)";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x < logicalWidth; x += 55) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, logicalHeight);
+      ctx.stroke();
+    }
+
+    for (let y = 0; y < logicalHeight; y += 45) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(logicalWidth, y);
+      ctx.stroke();
+    }
+
+    points.forEach((point, index) => {
+      const colors = ["#5db9ff", "#ff7f66", "#46d6b1"];
+      ctx.fillStyle = colors[index % 3];
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  };
+
+  if (prefersReducedMotion) {
+    drawStatic();
+    window.addEventListener("resize", drawStatic, { passive: true });
+    return;
+  }
+
   const pulses = points.map((point, index) => ({
     ...point,
     type: index % 3,
@@ -150,17 +183,17 @@
     ctx.strokeStyle = "rgba(159, 178, 194, 0.12)";
     ctx.lineWidth = 1;
 
-    for (let x = 0; x < mapCanvas.width; x += 55) {
+    for (let x = 0; x < logicalWidth; x += 55) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
-      ctx.lineTo(x, mapCanvas.height);
+      ctx.lineTo(x, logicalHeight);
       ctx.stroke();
     }
 
-    for (let y = 0; y < mapCanvas.height; y += 45) {
+    for (let y = 0; y < logicalHeight; y += 45) {
       ctx.beginPath();
       ctx.moveTo(0, y);
-      ctx.lineTo(mapCanvas.width, y);
+      ctx.lineTo(logicalWidth, y);
       ctx.stroke();
     }
   };
@@ -195,13 +228,31 @@
     ctx.stroke();
   };
 
+  let frameId = 0;
+
   const drawFrame = (time) => {
-    ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+    ctx.clearRect(0, 0, logicalWidth, logicalHeight);
     drawGrid();
     drawLinks(time);
     pulses.forEach((node) => drawPulse(node, time));
-    requestAnimationFrame(drawFrame);
+    frameId = requestAnimationFrame(drawFrame);
   };
 
-  requestAnimationFrame(drawFrame);
+  const startMap = () => {
+    syncCanvasSize();
+    cancelAnimationFrame(frameId);
+    frameId = requestAnimationFrame(drawFrame);
+  };
+
+  startMap();
+
+  let resizeTimer = 0;
+  window.addEventListener(
+    "resize",
+    () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(startMap, 120);
+    },
+    { passive: true }
+  );
 })();
