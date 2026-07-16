@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cybersecurity Family | Offensive Testing &amp; Security Operations</title>
+    <meta
+      name="description"
+      content="Cybersecurity Family delivers penetration testing, detection engineering, incident response, and recovery support for cloud and hybrid environments."
+    />
+    <meta name="theme-color" content="#08141f" />
+    <meta property="og:title" content="Cybersecurity Family" />
+    <meta
+      property="og:description"
+      content="Harden your attack surface with offensive testing, detection engineering, and 24/7 incident response."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="logo.svg" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="Cybersecurity Family" class="brand-logo" width="54" height="38" />
+        <span>CYBERSECURITY FAMILY</span>
+      </a>
+      <nav aria-label="Primary">
+        <button
+          id="menuToggle"
+          class="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation"
+          aria-controls="mainMenu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <ul id="mainMenu" class="menu">
+          <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero reveal">
+        <p class="tag">Security Operations</p>
+        <h1>Harden your attack surface before adversaries map it.</h1>
+        <p class="lead">
+          We combine red-team realism with blue-team discipline to reduce dwell time,
+          close high-risk paths, and keep cloud and hybrid infrastructure resilient.
+        </p>
+        <div class="hero-actions">
+          <a href="contact.html" class="btn btn-primary">Request a Briefing</a>
+          <a href="services.html" class="btn btn-ghost">View Services</a>
+        </div>
+        <div class="hero-grid">
+          <article>
+            <h3>4m 12s</h3>
+            <p>Median detection time in managed deployments</p>
+          </article>
+          <article>
+            <h3>96%</h3>
+            <p>Critical misconfigurations remediated within 14 days</p>
+          </article>
+          <article>
+            <h3>24/7</h3>
+            <p>Threat monitoring and incident escalation coverage</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel reveal" aria-labelledby="services-heading">
+        <div class="section-head">
+          <p class="tag">Capabilities</p>
+          <h2 id="services-heading">Built for modern cloud and hybrid infrastructure</h2>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Penetration Testing</h3>
+            <p>
+              Objective-driven assessments that expose exploit chains across applications,
+              identity systems, and cloud controls.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Detection Engineering</h3>
+            <p>
+              Telemetry tuning and SIEM content development that reduce alert fatigue and
+              surface high-fidelity threats.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Incident Response</h3>
+            <p>
+              Containment, forensics, and recovery playbooks delivered with clear stakeholder
+              communication at every stage.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Data Recovery Support</h3>
+            <p>
+              Forensic recovery guidance, evidence preservation, and secure restoration
+              workflows following unauthorized access.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Fund Tracing &amp; Recovery</h3>
+            <p>
+              Fund-flow analysis, transaction tracing, and documentation packages prepared
+              for legal, banking, and compliance teams.
+            </p>
+          </article>
+        </div>
+        <div class="section-cta">
+          <a href="services.html" class="btn btn-ghost">Explore full service catalog</a>
+        </div>
+      </section>
+
+      <section class="intel reveal" aria-labelledby="intel-heading">
+        <div class="section-head">
+          <p class="tag">Threat Snapshot</p>
+          <h2 id="intel-heading">Priority vectors this quarter</h2>
+        </div>
+        <div class="intel-list">
+          <article>
+            <h3>Identity Abuse</h3>
+            <p>
+              Token replay and over-privileged service principals remain among the highest-impact
+              paths to lateral movement.
+            </p>
+          </article>
+          <article>
+            <h3>Supply Chain Drift</h3>
+            <p>
+              Unsigned build artifacts and stale CI secrets continue to appear in post-compromise
+              investigations.
+            </p>
+          </article>
+          <article>
+            <h3>Ransomware Staging</h3>
+            <p>
+              Adversaries often spend days in reconnaissance before encryption, making early
+              detection essential.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="map-panel reveal" aria-labelledby="map-title">
+        <div class="section-head">
+          <p class="tag">Visibility</p>
+          <h2 id="map-title">Attack-path telemetry visualization</h2>
+        </div>
+        <div class="map-shell">
+          <canvas
+            id="threatMap"
+            width="1000"
+            height="430"
+            role="img"
+            aria-label="Animated visualization of recon scans, exploit attempts, and blocked activity"
+          ></canvas>
+          <div class="map-legend">
+            <p><span class="dot dot-scan" aria-hidden="true"></span> Recon scans</p>
+            <p><span class="dot dot-exploit" aria-hidden="true"></span> Exploit attempts</p>
+            <p><span class="dot dot-block" aria-hidden="true"></span> Blocked in pipeline</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline reveal" aria-labelledby="process-heading">
+        <div class="section-head">
+          <p class="tag">Engagement Model</p>
+          <h2 id="process-heading">From assessment to measurable defense uplift</h2>
+        </div>
+        <ol>
+          <li>
+            <span>01</span>
+            Scope mapping and threat modeling aligned to business-critical assets.
+          </li>
+          <li>
+            <span>02</span>
+            Adversarial testing with transparent evidence and documented exploit paths.
+          </li>
+          <li>
+            <span>03</span>
+            Remediation sprints executed alongside security and engineering teams.
+          </li>
+          <li>
+            <span>04</span>
+            Continuous validation through tabletop and purple-team exercises.
+          </li>
+        </ol>
+      </section>
+
+      <section class="cta-band reveal" aria-labelledby="cta-heading">
+        <div class="section-head">
+          <p class="tag">Get Started</p>
+          <h2 id="cta-heading">Request a security posture briefing</h2>
+          <p class="lead">
+            Share your environment and priorities. We will return a practical next-step outline
+            tailored to your team and threat model.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a href="contact.html" class="btn btn-primary">Contact Our Team</a>
+          <a href="about.html" class="btn btn-ghost">About Our Approach</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="logo.svg" alt="" class="brand-logo" width="48" height="34" aria-hidden="true" />
+          <div>
+            <strong>Cybersecurity Family</strong>
+            <p>Cyber defense engineered for momentum.</p>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="services.html">Services</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <p class="footer-copy">&copy; 2026 Cybersecurity Family. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Cybersecurity Family</title>
+    <meta
+      name="description"
+      content="Request a cybersecurity readiness briefing from Cybersecurity Family. Share your environment and priorities for a practical next-step outline."
+    />
+    <meta name="theme-color" content="#08141f" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="Cybersecurity Family" class="brand-logo" width="54" height="38" />
+        <span>CYBERSECURITY FAMILY</span>
+      </a>
+      <nav aria-label="Primary">
+        <button
+          id="menuToggle"
+          class="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation"
+          aria-controls="mainMenu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <ul id="mainMenu" class="menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="page-hero reveal">
+        <p class="tag">Contact</p>
+        <h1>Tell us where risk is slowing you down.</h1>
+        <p class="lead">
+          Share a few details about your environment. We respond with a practical next-step
+          outline tailored to your team structure and priorities.
+        </p>
+      </section>
+
+      <section class="contact reveal" aria-labelledby="form-heading">
+        <div class="contact-layout">
+          <div class="contact-aside">
+            <h2 id="form-heading">What to expect</h2>
+            <ul class="expect-list">
+              <li>Confirmation within one business day</li>
+              <li>Scoped recommendations—not a generic pitch deck</li>
+              <li>Clear options for assessment or retainer engagement</li>
+            </ul>
+            <div class="contact-meta">
+              <p><span class="meta-label">Focus areas</span> Cloud, hybrid, and enterprise networks</p>
+              <p><span class="meta-label">Response window</span> Business hours, priority for active incidents</p>
+            </div>
+          </div>
+
+          <form
+            class="contact-form"
+            name="briefing"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            action="contact.html"
+          >
+            <input type="hidden" name="form-name" value="briefing" />
+            <p class="hp-field" aria-hidden="true">
+              <label>
+                Do not fill this out
+                <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+              </label>
+            </p>
+
+            <label>
+              Full name
+              <input type="text" name="name" placeholder="Alex Rivera" autocomplete="name" required />
+            </label>
+            <label>
+              Work email
+              <input
+                type="email"
+                name="email"
+                placeholder="alex@company.com"
+                autocomplete="email"
+                required
+              />
+            </label>
+            <label>
+              Organization
+              <input
+                type="text"
+                name="company"
+                placeholder="Northbound Systems"
+                autocomplete="organization"
+                required
+              />
+            </label>
+            <label>
+              Environment focus
+              <select name="environment" required>
+                <option value="">Select one</option>
+                <option value="Cloud-Native">Cloud-native</option>
+                <option value="Hybrid Infrastructure">Hybrid infrastructure</option>
+                <option value="Enterprise Network">Enterprise network</option>
+                <option value="Other">Other / mixed</option>
+              </select>
+            </label>
+            <label>
+              Current security priority
+              <textarea
+                rows="5"
+                name="priority"
+                placeholder="Example: improve detection for identity compromise and cloud lateral movement"
+                required
+              ></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">Submit Request</button>
+            <p class="form-note">We treat all submissions as confidential.</p>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite" hidden></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="logo.svg" alt="" class="brand-logo" width="48" height="34" aria-hidden="true" />
+          <div>
+            <strong>Cybersecurity Family</strong>
+            <p>Cyber defense engineered for momentum.</p>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="services.html">Services</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <p class="footer-copy">&copy; 2026 Cybersecurity Family. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
