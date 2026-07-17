@@ -22,30 +22,62 @@
   --safe-left: env(safe-area-inset-left, 0px);
 }
 
-/* ---------- CTFamily splash intro (every public page load) ---------- */
+/* ---------- CTFamily splash intro (home only; hold & swipe up) ---------- */
 .ctf-splash {
   position: fixed;
   inset: 0;
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   background: #0a0a0a;
   opacity: 1;
-  transition: opacity 0.55s ease;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  outline: none;
+  will-change: transform, opacity;
+}
+
+.ctf-splash:active {
+  cursor: grabbing;
 }
 
 .ctf-splash.is-leaving {
-  opacity: 0;
   pointer-events: none;
+}
+
+.ctf-splash.is-pulling .ctf-splash-hint-text {
+  opacity: 0.45;
 }
 
 body.splash-active {
   overflow: hidden;
+  touch-action: none;
+}
+
+.ctf-splash-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding:
+    max(1.5rem, env(safe-area-inset-top, 0px))
+    1.25rem
+    max(1.25rem, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  min-height: 100%;
 }
 
 .ctf-splash-inner {
   width: min(620px, 92vw);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ctf-splash-svg {
@@ -88,12 +120,73 @@ body.splash-active {
   }
 }
 
+/* Bottom swipe instruction */
+.ctf-splash-hint {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding-bottom: 0.35rem;
+  margin-top: auto;
+}
+
+.ctf-splash-hint-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  height: 2rem;
+  justify-content: flex-end;
+}
+
+.ctf-splash-chevron {
+  width: 14px;
+  height: 14px;
+  border-left: 2px solid rgba(255, 255, 255, 0.85);
+  border-top: 2px solid rgba(255, 255, 255, 0.85);
+  transform: rotate(45deg);
+  opacity: 0.35;
+  animation: ctfSwipeChev 1.35s ease-in-out infinite;
+}
+
+.ctf-splash-chevron:nth-child(2) {
+  animation-delay: 0.18s;
+}
+
+.ctf-splash-hint-text {
+  margin: 0;
+  font-family: "Montserrat", "Space Grotesk", system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@keyframes ctfSwipeChev {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: rotate(45deg) translateY(6px);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(45deg) translateY(-2px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ctf-splash-dot,
   .ctf-splash-ogspot,
   .ctf-splash-name1 {
     animation: none;
     opacity: 1;
+  }
+
+  .ctf-splash-chevron {
+    animation: none;
+    opacity: 0.75;
   }
 }
 

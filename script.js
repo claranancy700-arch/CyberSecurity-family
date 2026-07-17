@@ -35,41 +35,179 @@
     overlay.id = "ctfSplash";
     overlay.className = "ctf-splash";
     overlay.setAttribute("role", "dialog");
-    overlay.setAttribute("aria-label", "Welcome to CTFamily");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Welcome to CTFamily. Hold and swipe up to enter.");
     overlay.innerHTML = `
-      <div class="ctf-splash-inner">
-        <svg class="ctf-splash-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-hidden="true">
-          <defs>
-            <filter id="ctfSplashShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.35"/>
-            </filter>
-          </defs>
-          <g filter="url(#ctfSplashShadow)" transform="translate(40,28)">
-            <text class="ctf-splash-name1" x="0" y="62"
-              fill="#ffffff" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="42" letter-spacing="-1.5">Welcome to</text>
-            <text x="248" y="62" fill="rgba(255,255,255,0.95)" font-family="Montserrat, system-ui, sans-serif" font-weight="100" font-size="42" letter-spacing="-1">
-              <tspan class="ctf-splash-ogspot"> CTFamily</tspan><tspan class="ctf-splash-dot">.</tspan>
-            </text>
-            <text class="ctf-splash-name1" x="0" y="118"
-              fill="rgba(255,255,255,0.72)" font-family="Montserrat, system-ui, sans-serif" font-weight="400" font-size="22" letter-spacing="0.8">your secured recovery service</text>
-          </g>
-        </svg>
+      <div class="ctf-splash-stage">
+        <div class="ctf-splash-inner">
+          <svg class="ctf-splash-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-hidden="true">
+            <defs>
+              <filter id="ctfSplashShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.35"/>
+              </filter>
+            </defs>
+            <g filter="url(#ctfSplashShadow)" transform="translate(40,28)">
+              <text class="ctf-splash-name1" x="0" y="62"
+                fill="#ffffff" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="42" letter-spacing="-1.5">Welcome to</text>
+              <text x="248" y="62" fill="rgba(255,255,255,0.95)" font-family="Montserrat, system-ui, sans-serif" font-weight="100" font-size="42" letter-spacing="-1">
+                <tspan class="ctf-splash-ogspot"> CTFamily</tspan><tspan class="ctf-splash-dot">.</tspan>
+              </text>
+              <text class="ctf-splash-name1" x="0" y="118"
+                fill="rgba(255,255,255,0.72)" font-family="Montserrat, system-ui, sans-serif" font-weight="400" font-size="22" letter-spacing="0.8">your secured recovery service</text>
+            </g>
+          </svg>
+        </div>
+        <div class="ctf-splash-hint" aria-hidden="true">
+          <div class="ctf-splash-hint-track">
+            <span class="ctf-splash-chevron"></span>
+            <span class="ctf-splash-chevron"></span>
+          </div>
+          <p class="ctf-splash-hint-text">Hold &amp; swipe up to enter</p>
+        </div>
       </div>
     `;
 
     document.body.appendChild(overlay);
     document.body.classList.add("splash-active");
 
-    const holdMs = prefersReducedMotion ? 400 : 2200;
-    const fadeMs = prefersReducedMotion ? 200 : 550;
+    const stage = overlay.querySelector(".ctf-splash-stage");
+    const fadeMs = prefersReducedMotion ? 220 : 520;
+    const dismissThreshold = 110;
+    let startY = 0;
+    let dragging = false;
+    let dismissed = false;
+    let pull = 0;
 
-    window.setTimeout(() => {
+    const dismissSplash = () => {
+      if (dismissed) return;
+      dismissed = true;
       overlay.classList.add("is-leaving");
+      overlay.style.transform = "";
+      overlay.style.opacity = "";
       window.setTimeout(() => {
         overlay.remove();
         document.body.classList.remove("splash-active");
+        cleanup();
       }, fadeMs);
-    }, holdMs);
+    };
+
+    const applyPull = (dy) => {
+      // Only allow upward drag (negative screen dy when finger moves up)
+      pull = Math.max(0, -dy);
+      const progress = Math.min(1, pull / (dismissThreshold * 1.6));
+      overlay.style.transform = `translateY(${-pull}px)`;
+      overlay.style.opacity = String(1 - progress * 0.45);
+      overlay.classList.toggle("is-pulling", pull > 8);
+    };
+
+    const resetPull = () => {
+      pull = 0;
+      overlay.style.transition = "transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.35s ease";
+      overlay.style.transform = "translateY(0)";
+      overlay.style.opacity = "1";
+      overlay.classList.remove("is-pulling");
+      window.setTimeout(() => {
+        if (!dismissed) overlay.style.transition = "";
+      }, 360);
+    };
+
+    const onPointerDown = (event) => {
+      if (dismissed) return;
+      dragging = true;
+      startY = event.clientY ?? event.touches?.[0]?.clientY ?? 0;
+      overlay.style.transition = "none";
+      overlay.setPointerCapture?.(event.pointerId);
+    };
+
+    const onPointerMove = (event) => {
+      if (!dragging || dismissed) return;
+      const y = event.clientY ?? event.touches?.[0]?.clientY ?? startY;
+      applyPull(y - startY);
+    };
+
+    const onPointerUp = (event) => {
+      if (!dragging || dismissed) return;
+      dragging = false;
+      const y = event.clientY ?? event.changedTouches?.[0]?.clientY ?? startY;
+      applyPull(y - startY);
+      if (pull >= dismissThreshold) {
+        overlay.style.transition = `transform ${fadeMs}ms ease, opacity ${fadeMs}ms ease`;
+        overlay.style.transform = "translateY(-120%)";
+        overlay.style.opacity = "0";
+        dismissSplash();
+      } else {
+        resetPull();
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === "ArrowUp" || event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        dismissSplash();
+      }
+    };
+
+    const cleanup = () => {
+      overlay.removeEventListener("pointerdown", onPointerDown);
+      overlay.removeEventListener("pointermove", onPointerMove);
+      overlay.removeEventListener("pointerup", onPointerUp);
+      overlay.removeEventListener("pointercancel", onPointerUp);
+      // touch fallbacks for older mobile
+      overlay.removeEventListener("touchstart", onTouchStart, { passive: false });
+      overlay.removeEventListener("touchmove", onTouchMove, { passive: false });
+      overlay.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+
+    const onTouchStart = (event) => {
+      if (dismissed) return;
+      dragging = true;
+      startY = event.touches[0].clientY;
+      overlay.style.transition = "none";
+      event.preventDefault();
+    };
+
+    const onTouchMove = (event) => {
+      if (!dragging || dismissed) return;
+      applyPull(event.touches[0].clientY - startY);
+      event.preventDefault();
+    };
+
+    const onTouchEnd = (event) => {
+      if (!dragging || dismissed) return;
+      dragging = false;
+      const y = event.changedTouches[0]?.clientY ?? startY;
+      applyPull(y - startY);
+      if (pull >= dismissThreshold) {
+        overlay.style.transition = `transform ${fadeMs}ms ease, opacity ${fadeMs}ms ease`;
+        overlay.style.transform = "translateY(-120%)";
+        overlay.style.opacity = "0";
+        dismissSplash();
+      } else {
+        resetPull();
+      }
+    };
+
+    // Pointer events (mouse + modern touch)
+    if (window.PointerEvent) {
+      overlay.addEventListener("pointerdown", onPointerDown);
+      overlay.addEventListener("pointermove", onPointerMove);
+      overlay.addEventListener("pointerup", onPointerUp);
+      overlay.addEventListener("pointercancel", onPointerUp);
+    } else {
+      overlay.addEventListener("touchstart", onTouchStart, { passive: false });
+      overlay.addEventListener("touchmove", onTouchMove, { passive: false });
+      overlay.addEventListener("touchend", onTouchEnd);
+      overlay.addEventListener("mousedown", (e) => onPointerDown(e));
+      window.addEventListener("mousemove", onPointerMove);
+      window.addEventListener("mouseup", onPointerUp);
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+
+    // Focus for a11y (keyboard dismiss)
+    overlay.tabIndex = -1;
+    overlay.focus({ preventScroll: true });
   };
 
   if (document.readyState === "loading") {

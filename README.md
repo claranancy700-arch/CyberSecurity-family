@@ -20,7 +20,8 @@ Professional static website for **CyberTech-Family** — offensive testing, dete
 
 ## Splash intro
 
-The **Welcome to CTFamily** splash runs on the **home page only**, on each full page load/reload (same animation as `ctf loading.html`).
+The **Welcome to CTFamily** intro runs on the **home page only** (each full load/reload).  
+It **stays until hold & swipe up** (or Arrow Up / Enter). A swipe-up hint sits at the bottom.
 
 ## Admin dashboard
 
