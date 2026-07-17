@@ -111,20 +111,4 @@
     font-size="280"
     font-weight="1000"
   >F</text>
-
-  <!-- Wordmark (remove this group for icon-only) -->
-  <g id="wordmark">
-    <rect x="268" y="248" width="104" height="5" rx="2.5" fill="url(#barMetal)"/>
-    <text
-      id="brand"
-      x="310"
-      y="278"
-      text-anchor="middle"
-      fill="#EAF3FC"
-      font-family="'Arial Black', Impact, 'Segoe UI', sans-serif"
-      font-size="22"
-      font-weight="800"
-      letter-spacing="3"
-    >CYBERTECH-FAMILY</text>
-  </g>
 </svg>
