@@ -4,6 +4,73 @@
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const desktopNavQuery = window.matchMedia("(min-width: 1025px)");
 
+  /* ---------- Site intro splash (every public page load) ---------- */
+  const pathName = (window.location.pathname || "").toLowerCase();
+  const skipSplash =
+    document.body?.dataset?.noSplash === "1" ||
+    pathName.includes("admin") ||
+    pathName.includes("ctf%20loading") ||
+    pathName.includes("ctf loading");
+
+  const runSplash = () => {
+    if (skipSplash) return;
+
+    if (!document.getElementById("ctfSplashFonts")) {
+      const fontLink = document.createElement("link");
+      fontLink.id = "ctfSplashFonts";
+      fontLink.rel = "stylesheet";
+      fontLink.href =
+        "https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Montserrat:wght@100;400&display=swap";
+      document.head.appendChild(fontLink);
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "ctfSplash";
+    overlay.className = "ctf-splash";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-label", "Welcome to CTFamily");
+    overlay.innerHTML = `
+      <div class="ctf-splash-inner">
+        <svg class="ctf-splash-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-hidden="true">
+          <defs>
+            <filter id="ctfSplashShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <g filter="url(#ctfSplashShadow)" transform="translate(40,28)">
+            <text class="ctf-splash-name1" x="0" y="62"
+              fill="#ffffff" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="42" letter-spacing="-1.5">Welcome to</text>
+            <text x="248" y="62" fill="rgba(255,255,255,0.95)" font-family="Montserrat, system-ui, sans-serif" font-weight="100" font-size="42" letter-spacing="-1">
+              <tspan class="ctf-splash-ogspot"> CTFamily</tspan><tspan class="ctf-splash-dot">.</tspan>
+            </text>
+            <text class="ctf-splash-name1" x="0" y="118"
+              fill="rgba(255,255,255,0.72)" font-family="Montserrat, system-ui, sans-serif" font-weight="400" font-size="22" letter-spacing="0.8">your secured recovery service</text>
+          </g>
+        </svg>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.classList.add("splash-active");
+
+    const holdMs = prefersReducedMotion ? 400 : 2200;
+    const fadeMs = prefersReducedMotion ? 200 : 550;
+
+    window.setTimeout(() => {
+      overlay.classList.add("is-leaving");
+      window.setTimeout(() => {
+        overlay.remove();
+        document.body.classList.remove("splash-active");
+      }, fadeMs);
+    }, holdMs);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runSplash, { once: true });
+  } else {
+    runSplash();
+  }
+
   const setMenuOpen = (open) => {
     if (!menuToggle || !mainMenu) return;
     mainMenu.classList.toggle("open", open);
@@ -153,8 +220,20 @@
 
   const saveRegistrationDraft = (record) => {
     try {
+      if (!record.localId) {
+        record.localId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      }
       const existing = JSON.parse(localStorage.getItem(COMPLAINT_STORE_KEY) || "[]");
-      existing.unshift(record);
+      const idx = existing.findIndex(
+        (item) =>
+          (record.localId && item.localId === record.localId) ||
+          (record.id && item.id && item.id === record.id)
+      );
+      if (idx >= 0) {
+        existing[idx] = { ...existing[idx], ...record };
+      } else {
+        existing.unshift(record);
+      }
       localStorage.setItem(COMPLAINT_STORE_KEY, JSON.stringify(existing.slice(0, 100)));
     } catch (_err) {
       // Storage may be blocked; non-fatal for client UX

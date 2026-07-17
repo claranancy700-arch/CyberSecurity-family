@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Admin | CyberTech-Family</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#08141f" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body data-no-splash="1" class="admin-body">
+    <a class="skip-link" href="#adminMain">Skip to content</a>
+
+    <!-- Login gate -->
+    <section id="adminLogin" class="admin-login" aria-labelledby="loginTitle">
+      <div class="admin-login-card">
+        <img src="logo.svg" alt="CyberTech-Family" class="admin-login-logo" width="140" height="60" />
+        <h1 id="loginTitle">Admin dashboard</h1>
+        <p class="admin-login-lead">Confirm payments and admit complaint registrations.</p>
+        <form id="loginForm" class="admin-login-form">
+          <label>
+            Access key
+            <input
+              type="password"
+              id="adminPassword"
+              name="password"
+              autocomplete="current-password"
+              placeholder="Enter admin key"
+              required
+            />
+          </label>
+          <button type="submit" class="btn btn-primary">Sign in</button>
+          <p class="form-status" id="loginStatus" role="status" aria-live="polite" hidden></p>
+        </form>
+        <p class="admin-login-note">
+          Client-side gate for this static site. Change the key in <code>admin.js</code> before production.
+        </p>
+        <a class="admin-back-link" href="index.html">← Back to site</a>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <div id="adminApp" class="admin-app" hidden>
+      <header class="admin-topbar">
+        <div class="admin-topbar-brand">
+          <img src="logo.svg" alt="" width="88" height="38" aria-hidden="true" />
+          <div>
+            <strong>CTF Admin</strong>
+            <span>Registration intake</span>
+          </div>
+        </div>
+        <div class="admin-topbar-actions">
+          <button type="button" class="btn btn-ghost btn-small" id="refreshBtn">Refresh</button>
+          <button type="button" class="btn btn-ghost btn-small" id="exportBtn">Export JSON</button>
+          <button type="button" class="btn btn-ghost btn-small" id="logoutBtn">Sign out</button>
+        </div>
+      </header>
+
+      <main id="adminMain" class="admin-main">
+        <section class="admin-stats" aria-label="Registration totals">
+          <article class="admin-stat">
+            <p class="meta-label">Total</p>
+            <h2 id="statTotal">0</h2>
+          </article>
+          <article class="admin-stat">
+            <p class="meta-label">Awaiting payment</p>
+            <h2 id="statAwaiting">0</h2>
+          </article>
+          <article class="admin-stat">
+            <p class="meta-label">Payment submitted</p>
+            <h2 id="statPayment">0</h2>
+          </article>
+          <article class="admin-stat">
+            <p class="meta-label">Admitted</p>
+            <h2 id="statAdmitted">0</h2>
+          </article>
+        </section>
+
+        <section class="admin-toolbar">
+          <label class="admin-filter">
+            Status
+            <select id="statusFilter">
+              <option value="all">All</option>
+              <option value="awaiting_payment">Awaiting payment</option>
+              <option value="payment_submitted">Payment submitted</option>
+              <option value="verified">Payment verified</option>
+              <option value="admitted">Admitted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </label>
+          <label class="admin-filter admin-search">
+            Search
+            <input type="search" id="searchInput" placeholder="Name, email, ID, subject…" />
+          </label>
+        </section>
+
+        <section class="admin-layout">
+          <div class="admin-table-wrap">
+            <table class="admin-table" aria-label="Registrations">
+              <thead>
+                <tr>
+                  <th>Submitted</th>
+                  <th>Client</th>
+                  <th>Service</th>
+                  <th>Status</th>
+                  <th>Complaint ID</th>
+                </tr>
+              </thead>
+              <tbody id="regTableBody">
+                <tr>
+                  <td colspan="5" class="admin-empty">No registrations yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <aside class="admin-detail" id="detailPanel" aria-live="polite">
+            <h2>Case detail</h2>
+            <p class="admin-empty" id="detailEmpty">Select a registration to review.</p>
+            <div id="detailContent" hidden>
+              <dl class="admin-dl" id="detailFields"></dl>
+              <div class="admin-detail-actions">
+                <button type="button" class="btn btn-primary btn-small" id="verifyBtn">
+                  Verify payment
+                </button>
+                <button type="button" class="btn btn-primary btn-small" id="admitBtn">
+                  Admit registration
+                </button>
+                <button type="button" class="btn btn-ghost btn-small" id="rejectBtn">
+                  Reject
+                </button>
+                <button type="button" class="btn btn-ghost btn-small" id="deleteBtn">
+                  Delete
+                </button>
+              </div>
+              <p class="form-status" id="detailStatus" role="status" aria-live="polite" hidden></p>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="admin.js" defer></script>
+  </body>
+</html>

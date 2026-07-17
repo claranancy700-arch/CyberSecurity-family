@@ -22,6 +22,81 @@
   --safe-left: env(safe-area-inset-left, 0px);
 }
 
+/* ---------- CTFamily splash intro (every public page load) ---------- */
+.ctf-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  opacity: 1;
+  transition: opacity 0.55s ease;
+}
+
+.ctf-splash.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.splash-active {
+  overflow: hidden;
+}
+
+.ctf-splash-inner {
+  width: min(620px, 92vw);
+}
+
+.ctf-splash-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.4));
+}
+
+.ctf-splash-dot {
+  animation: ctfLogoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.ctf-splash-ogspot {
+  animation: ctfLogoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 280ms forwards;
+  opacity: 0;
+}
+
+.ctf-splash-name1 {
+  animation: ctfLogoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 520ms forwards;
+  opacity: 0;
+}
+
+@keyframes ctfLogoPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(45px);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.12) translateY(-10px);
+  }
+  78% {
+    transform: scale(0.96) translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctf-splash-dot,
+  .ctf-splash-ogspot,
+  .ctf-splash-name1 {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 *,
 *::before,
 *::after {

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CTFamily</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&amp;family=Montserrat:wght@100;400;900&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Montserrat:wght@100;400;900&display=swap');
+        
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, sans-serif;
+            color: white;
+        }
+        
+        .logo-container {
+            position: relative;
+        }
+        
+        svg {
+            width: 620px;
+            max-width: 92vw;
+            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.4));
+        }
+        
+        /* UNFOLDS FROM THE DOT → FULL LOGO (same timing as before) */
+        .dot {
+            animation: logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+        
+        .ogspot {
+            animation: logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 280ms forwards;
+            opacity: 0;
+        }
+        
+        .name1 {
+            animation: logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 520ms forwards;
+            opacity: 0;
+        }
+        
+        @keyframes logoPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.4) translateY(45px);
+            }
+            55% {
+                opacity: 1;
+                transform: scale(1.12) translateY(-10px);
+            }
+            78% {
+                transform: scale(0.96) translateY(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Hover delight */
+        svg:hover {
+            filter: drop-shadow(0 20px 45px rgba(255, 255, 255, 0.15));
+            transform: scale(1.03);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .replay-btn {
+            margin-top: 40px;
+            padding: 14px 32px;
+            background: #ffffff;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(255,255,255,0.1);
+        }
+        
+        .replay-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="logo-container">
+    <svg xmlns="http://www.w3.org/2000/svg" width="620" height="220" viewBox="0 0 560 200" role="img" aria-label="Welcome to CTFamily">
+        <title>CTFamily — secured recovery service</title>
+        
+        <defs>
+            <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.35"/>
+            </filter>
+        </defs>
+
+        <!-- Logo group: up = Welcome to CTFamily · down = your secured recovery service -->
+        <g id="logo-group" filter="url(#softShadow)" transform="translate(40,28)">
+            
+            <!-- UP line: "Welcome to " (bold) — appears last in the unfold -->
+            <text class="name1" x="0" y="62" 
+                  style="fill: rgb(255, 255, 255); 
+                         font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+                         font-weight: 900; 
+                         font-size: 42px;
+                         letter-spacing: -1.5px;">
+                Welcome to
+            </text>
+            
+            <!-- UP line: " CTFamily" + "." so the dot can animate FIRST -->
+            <text class="name" x="248" y="62" 
+                  style="fill: rgba(255, 255, 255, 0.95); 
+                         font-family: 'Montserrat', system-ui, sans-serif; 
+                         font-weight: 100; 
+                         font-size: 42px;
+                         letter-spacing: -1px;">
+                <tspan class="ogspot"> CTFamily</tspan>
+                <tspan class="dot">.</tspan>
+            </text>
+
+            <!-- DOWN line: tagline (same animation classes on a second pass via delayed name1/ogspot pattern) -->
+            <text class="name1" x="0" y="118"
+                  style="fill: rgba(255, 255, 255, 0.72);
+                         font-family: 'Montserrat', system-ui, sans-serif;
+                         font-weight: 400;
+                         font-size: 22px;
+                         letter-spacing: 0.8px;">
+                your secured recovery service
+            </text>
+            
+        </g>
+    </svg>
+</div>
+
+<button class="replay-btn" onclick="replayAnimation()">↻ Replay Animation</button>
+
+<script>
+    function replayAnimation() {
+        const name1Parts = document.querySelectorAll('.name1');
+        const ogspot = document.querySelector('.ogspot');
+        const dot = document.querySelector('.dot');
+        
+        // Reset all
+        name1Parts.forEach((el) => { el.style.animation = 'none'; });
+        ogspot.style.animation = 'none';
+        dot.style.animation = 'none';
+        
+        // Force reflow
+        name1Parts.forEach((el) => { void el.offsetWidth; });
+        void ogspot.offsetWidth;
+        void dot.offsetWidth;
+        
+        // Re-trigger with exact same timing (dot → CTFamily → Welcome to / tagline)
+        dot.style.animation = 'logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+        ogspot.style.animation = 'logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 280ms forwards';
+        name1Parts.forEach((el) => {
+            el.style.animation = 'logoPop 950ms cubic-bezier(0.34, 1.56, 0.64, 1) 520ms forwards';
+        });
+    }
+    
+    // Auto-play on load
+    window.onload = () => {
+        setTimeout(() => {
+            document.querySelector('.dot').style.opacity = '1';
+        }, 120);
+    };
+</script>
+
+</body>
+</html>

@@ -14,6 +14,24 @@ Professional static website for **CyberTech-Family** — offensive testing, dete
 - `services.html` — service catalog
 - `about.html` — approach and outcomes
 - `contact.html` — briefing request form
+- `complaints.html` — complaint registration + crypto payment
+- `admin.html` — intake dashboard (confirm / admit registrations)
+- `ctf loading.html` — standalone splash animation reference
+
+## Splash intro
+
+Every public page shows the **Welcome to CTFamily** splash on each load (same animation as `ctf loading.html`).  
+Skipped on `admin.html` and the standalone loading file.
+
+## Admin dashboard
+
+Open `/admin.html`. Default access key (change in `admin.js`):
+
+```text
+CTF-Admin-2026
+```
+
+Registrations are stored in this browser’s `localStorage` under `ctf_complaint_registrations` (static-site limitation). Use the same browser that receives complaint submissions to review them, or export JSON from the admin panel.
 
 ## Local preview
 
