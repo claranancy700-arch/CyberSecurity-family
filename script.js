@@ -113,20 +113,21 @@
   const cryptoComplaintId = document.getElementById("cryptoComplaintId");
   const copyComplaintIdBtn = document.getElementById("copyComplaintId");
 
+  // Registration fee: $100 USD (crypto amounts ≈ $100 at reference rates)
   const cryptoWallets = {
     btc: {
       network: "Bitcoin mainnet",
-      amount: "0.015 BTC",
+      amount: "≈ 0.00156 BTC ($100)",
       address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     },
     eth: {
       network: "Ethereum mainnet (ERC-20 ready)",
-      amount: "0.35 ETH",
+      amount: "≈ 0.0546 ETH ($100)",
       address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
     },
     usdt: {
       network: "Tron TRC-20 (USDT)",
-      amount: "450 USDT",
+      amount: "100 USDT ($100)",
       address: "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
     },
   };
