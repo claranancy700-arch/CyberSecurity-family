@@ -53,9 +53,9 @@
         <p class="tag">Complaint Registration</p>
         <h1>File a detailed client complaint.</h1>
         <p class="lead">
-          Submit a concise case summary, declare whether proof is available, and complete
-          the registration fee via our crypto payment gateway. On submit you will receive a
-          unique Complaint ID / Tax ID to copy and retain.
+          Submit a concise case summary, declare whether proof is available, contact an agent,
+          then complete the $100 registration fee via crypto. Confirm payment to generate your
+          Complaint ID / Tax ID for tracking.
         </p>
       </section>
 
@@ -66,8 +66,8 @@
             <li>Be factual, chronological, and concise</li>
             <li>State clearly whether proof exists</li>
             <li>Attach or describe evidence sources when available</li>
-            <li>Copy your Complaint ID / Tax ID after submit</li>
-            <li>Include the ID in any crypto payment memo or follow-up</li>
+            <li>Submit the form, then contact an agent (email or WhatsApp)</li>
+            <li>Confirm payment to generate your Complaint ID / Tax ID</li>
           </ul>
           <div class="contact-meta">
             <p>
@@ -207,14 +207,46 @@
           </label>
 
           <p class="form-note">
-            Submitting generates a Complaint ID / Tax ID. Copy it from the prompt and keep it for
-            payment reference and case tracking.
+            After you submit, contact an agent to continue. Your Complaint ID / Tax ID is generated
+            when you confirm payment below.
           </p>
 
           <button class="btn btn-primary" type="submit" id="complaintSubmit">
             Submit complaint registration
           </button>
           <p class="form-status" id="complaintStatus" role="status" aria-live="polite" hidden></p>
+
+          <div class="agent-contact-panel" id="agentContactPanel" hidden>
+            <h3 class="agent-contact-title">Contact an agent to continue</h3>
+            <p class="field-hint">
+              Your registration details are ready. Reach an intake agent using one of the channels below,
+              then complete the $100 registration fee in the payment section.
+            </p>
+            <ul class="agent-contact-list">
+              <li>
+                <span class="meta-label">Email</span>
+                <a href="mailto:cybertechfamily001@gmail.com">cybertechfamily001@gmail.com</a>
+              </li>
+              <li>
+                <span class="meta-label">WhatsApp</span>
+                <a
+                  href="https://wa.me/14696682150"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >+1 (469) 668-2150</a>
+              </li>
+            </ul>
+            <div class="agent-contact-actions">
+              <a class="btn btn-primary" href="mailto:cybertechfamily001@gmail.com">Email agent</a>
+              <a
+                class="btn btn-ghost"
+                href="https://wa.me/14696682150"
+                target="_blank"
+                rel="noopener noreferrer"
+              >WhatsApp agent</a>
+              <a class="btn btn-ghost" href="#payment">Go to payment</a>
+            </div>
+          </div>
         </form>
       </section>
 
@@ -223,8 +255,8 @@
           <p class="tag">Crypto payment gateway</p>
           <h2 id="crypto-heading">Complete registration payment</h2>
           <p class="lead">
-            Pay the registration fee using one of the supported networks. Include your
-            Complaint ID / Tax ID in the transfer memo when supported by your wallet.
+            Pay the $100 registration fee using one of the supported networks. Confirm payment
+            below to generate your Complaint ID / Tax ID, then share it with your agent.
           </p>
         </div>
 
@@ -256,14 +288,14 @@
             <div class="crypto-row">
               <span class="meta-label">Receiving wallet</span>
               <div class="wallet-line">
-                <code id="cryptoAddress" class="wallet-address">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>
+                <code id="cryptoAddress" class="wallet-address">bc1qjjt294zyykf2k8ftsclf7raqe02u3z4edxvsr6</code>
                 <button type="button" class="btn btn-ghost btn-small" id="copyAddress">Copy address</button>
               </div>
             </div>
             <div class="crypto-row">
               <span class="meta-label">Complaint ID / Tax ID</span>
               <div class="wallet-line">
-                <code id="cryptoComplaintId" class="wallet-address">Submit the form to generate your ID</code>
+                <code id="cryptoComplaintId" class="wallet-address">Confirm payment to generate your ID</code>
                 <button type="button" class="btn btn-ghost btn-small" id="copyComplaintId" disabled>Copy ID</button>
               </div>
             </div>
@@ -285,8 +317,8 @@
                 Confirm payment submitted
               </button>
               <p class="form-note">
-                Replace demo wallet addresses with your live treasury wallets before production use.
-                Payments are verified against the network after you paste the transaction hash.
+                After you paste the transaction hash and confirm, your Complaint ID / Tax ID is
+                generated. An admin will verify payment and admit the registration.
               </p>
             </div>
             <p class="form-status" id="paymentStatus" role="status" aria-live="polite" hidden></p>

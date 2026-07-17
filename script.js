@@ -114,25 +114,31 @@
   const copyComplaintIdBtn = document.getElementById("copyComplaintId");
 
   // Registration fee: $100 USD (crypto amounts ≈ $100 at reference rates)
+  // Live treasury wallets — replace only when rotating addresses
   const cryptoWallets = {
     btc: {
       network: "Bitcoin mainnet",
       amount: "≈ 0.00156 BTC ($100)",
-      address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      address: "bc1qjjt294zyykf2k8ftsclf7raqe02u3z4edxvsr6",
     },
     eth: {
-      network: "Ethereum mainnet (ERC-20 ready)",
+      network: "Ethereum mainnet",
       amount: "≈ 0.0546 ETH ($100)",
-      address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      address: "0x62e422b5936fB17F0B79B27Ea8181AdB3c34Fa52",
     },
     usdt: {
-      network: "Tron TRC-20 (USDT)",
+      network: "Ethereum ERC-20 (USDT)",
       amount: "100 USDT ($100)",
-      address: "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
+      address: "0x62e422b5936fB17F0B79B27Ea8181AdB3c34Fa52",
     },
   };
 
+  // Stored drafts for a future admin intake console
+  const COMPLAINT_STORE_KEY = "ctf_complaint_registrations";
+
   let activeComplaintId = "";
+  let formSubmitted = false;
+  let pendingRegistration = null;
 
   const generateComplaintId = () => {
     const now = new Date();
@@ -143,6 +149,16 @@
     const checksum = Math.floor(1000 + Math.random() * 9000);
     // Complaint ID doubles as Tax ID reference for the registration case
     return `CTF-${y}${m}${d}-${rand}-TAX${checksum}`;
+  };
+
+  const saveRegistrationDraft = (record) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem(COMPLAINT_STORE_KEY) || "[]");
+      existing.unshift(record);
+      localStorage.setItem(COMPLAINT_STORE_KEY, JSON.stringify(existing.slice(0, 100)));
+    } catch (_err) {
+      // Storage may be blocked; non-fatal for client UX
+    }
   };
 
   const copyText = async (value, successMessage, statusEl) => {
@@ -194,6 +210,8 @@
     }
   }
 
+  const agentContactPanel = document.getElementById("agentContactPanel");
+
   if (complaintForm) {
     complaintForm.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -212,44 +230,56 @@
         return;
       }
 
-      activeComplaintId = generateComplaintId();
-
-      if (cryptoComplaintId) {
-        cryptoComplaintId.textContent = activeComplaintId;
-      }
-      if (copyComplaintIdBtn) {
-        copyComplaintIdBtn.disabled = false;
-      }
       if (complaintService && serviceSelect) {
         complaintService.value = serviceSelect.value;
       }
 
-      // Required: prompt carries the code for the user to copy as Complaint ID / Tax ID
-      window.prompt(
-        "Your Complaint ID / Tax ID was generated. Copy this code and keep it for payment reference and case tracking:",
-        activeComplaintId
-      );
+      formSubmitted = true;
+      pendingRegistration = {
+        id: null,
+        status: "awaiting_payment",
+        submittedAt: new Date().toISOString(),
+        name: document.getElementById("clientName")?.value?.trim() || "",
+        email: document.getElementById("clientEmail")?.value?.trim() || "",
+        organization: document.getElementById("clientOrg")?.value?.trim() || "",
+        service: serviceSelect?.value || "",
+        subject: document.getElementById("complaintSubject")?.value?.trim() || "",
+        details: document.getElementById("complaintDetails")?.value?.trim() || "",
+        summary: document.getElementById("complaintSummary")?.value?.trim() || "",
+        hasProof: hasProof ? hasProof.value : "",
+        proofDetails: proofDetails?.value?.trim() || "",
+        contactMethod: document.getElementById("contactMethod")?.value || "",
+        txHash: "",
+      };
+
+      saveRegistrationDraft(pendingRegistration);
+
+      // Show agent contact list (email + WhatsApp) — ID is generated on payment confirm
+      if (agentContactPanel) {
+        agentContactPanel.hidden = false;
+        agentContactPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
 
       if (complaintStatus) {
         complaintStatus.hidden = false;
         complaintStatus.className = "form-status is-success";
-        complaintStatus.textContent = `Registration recorded. Complaint ID / Tax ID: ${activeComplaintId}. Use it in the crypto payment section below.`;
-      }
-
-      const paymentSection = document.getElementById("payment");
-      if (paymentSection) {
-        paymentSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        complaintStatus.textContent =
+          "Registration submitted. Contact an agent below, then complete payment to generate your Complaint ID / Tax ID.";
       }
     });
   }
 
   if (copyComplaintIdBtn) {
     copyComplaintIdBtn.addEventListener("click", () => {
-      copyText(
-        activeComplaintId || (cryptoComplaintId && cryptoComplaintId.textContent) || "",
-        "Complaint ID / Tax ID copied.",
-        complaintStatus
-      );
+      if (!activeComplaintId) {
+        if (complaintStatus) {
+          complaintStatus.hidden = false;
+          complaintStatus.className = "form-status is-error";
+          complaintStatus.textContent = "Confirm payment first to generate your Complaint ID / Tax ID.";
+        }
+        return;
+      }
+      copyText(activeComplaintId, "Complaint ID / Tax ID copied.", complaintStatus);
     });
   }
 
@@ -290,15 +320,17 @@
   if (confirmPaymentBtn) {
     confirmPaymentBtn.addEventListener("click", () => {
       const tx = txHashInput ? txHashInput.value.trim() : "";
-      if (!activeComplaintId) {
+
+      if (!formSubmitted) {
         if (paymentStatus) {
           paymentStatus.hidden = false;
           paymentStatus.className = "form-status is-error";
           paymentStatus.textContent =
-            "Submit the complaint form first to generate your Complaint ID / Tax ID.";
+            "Submit the complaint form first, then contact an agent and complete payment.";
         }
         return;
       }
+
       if (!tx || tx.length < 8) {
         if (paymentStatus) {
           paymentStatus.hidden = false;
@@ -307,10 +339,36 @@
         }
         return;
       }
+
+      // Generate Complaint ID / Tax ID only after payment confirmation
+      if (!activeComplaintId) {
+        activeComplaintId = generateComplaintId();
+      }
+
+      if (cryptoComplaintId) {
+        cryptoComplaintId.textContent = activeComplaintId;
+      }
+      if (copyComplaintIdBtn) {
+        copyComplaintIdBtn.disabled = false;
+      }
+
+      if (pendingRegistration) {
+        pendingRegistration.id = activeComplaintId;
+        pendingRegistration.status = "payment_submitted";
+        pendingRegistration.txHash = tx;
+        pendingRegistration.paidAt = new Date().toISOString();
+        saveRegistrationDraft(pendingRegistration);
+      }
+
+      window.prompt(
+        "Payment confirmed. Copy your Complaint ID / Tax ID and keep it for case tracking:",
+        activeComplaintId
+      );
+
       if (paymentStatus) {
         paymentStatus.hidden = false;
         paymentStatus.className = "form-status is-success";
-        paymentStatus.textContent = `Payment notice received for ${activeComplaintId}. Hash: ${tx.slice(0, 18)}… Our team will verify on-chain.`;
+        paymentStatus.textContent = `Complaint ID / Tax ID: ${activeComplaintId}. Payment hash recorded (${tx.slice(0, 18)}…). An admin will verify and admit registration.`;
       }
     });
   }
