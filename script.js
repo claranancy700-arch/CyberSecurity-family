@@ -2,7 +2,7 @@
   const menuToggle = document.getElementById("menuToggle");
   const mainMenu = document.getElementById("mainMenu");
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const desktopNavQuery = window.matchMedia("(min-width: 901px)");
+  const desktopNavQuery = window.matchMedia("(min-width: 1025px)");
 
   const setMenuOpen = (open) => {
     if (!menuToggle || !mainMenu) return;
