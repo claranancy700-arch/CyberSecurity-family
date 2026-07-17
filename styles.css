@@ -411,6 +411,182 @@ section {
 
 .section-cta {
   margin-top: 1.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.complaint-grid {
+  display: grid;
+  gap: 1.15rem;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  align-items: start;
+}
+
+.proof-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1rem;
+  margin: 0;
+}
+
+.proof-fieldset legend {
+  padding: 0 0.35rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.field-hint {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.radio-row {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.radio-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(6, 18, 29, 0.55);
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.radio-card input {
+  width: auto;
+  min-height: 0;
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.radio-card:has(input:checked) {
+  border-color: rgba(70, 214, 177, 0.45);
+  background: rgba(70, 214, 177, 0.08);
+  color: var(--text);
+}
+
+.crypto-gateway {
+  margin-top: 2.5rem;
+}
+
+.crypto-panel {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  background: linear-gradient(180deg, rgba(22, 49, 73, 0.92), rgba(14, 35, 54, 0.94));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: clamp(0.95rem, 2.5vw, 1.25rem);
+  box-shadow: var(--shadow);
+}
+
+.crypto-assets {
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+}
+
+.crypto-asset {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(6, 18, 29, 0.65);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  min-height: var(--touch);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.crypto-asset:hover,
+.crypto-asset.is-active {
+  border-color: rgba(70, 214, 177, 0.45);
+  background: rgba(70, 214, 177, 0.1);
+}
+
+.asset-code {
+  font-family: "Sora", system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.asset-amount {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.crypto-details {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.crypto-row p {
+  margin: 0.25rem 0 0;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.wallet-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.wallet-address {
+  display: block;
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(6, 18, 29, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d7e9fb;
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.btn-small {
+  padding: 0.55rem 0.9rem;
+  min-height: 2.5rem;
+  font-size: 0.86rem;
+}
+
+.tx-label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.crypto-actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+@media (max-width: 900px) {
+  .complaint-grid,
+  .crypto-panel {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cards {
@@ -423,6 +599,33 @@ section {
   font-family: "Sora", system-ui, sans-serif;
   font-size: 1.08rem;
   line-height: 1.3;
+}
+
+.card-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  min-height: 100%;
+}
+
+.card-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.card-link .card-cta {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.card-link:hover .card-cta {
+  text-decoration: underline;
 }
 
 .card p,

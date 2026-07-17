@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Register Complaint | CyberTech-Family</title>
+    <meta
+      name="description"
+      content="Register a client complaint with CyberTech-Family. Provide a concise case summary, proof status, and complete registration payment via crypto."
+    />
+    <meta name="theme-color" content="#08141f" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="bg-noise" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="logo.svg" alt="CyberTech-Family" class="brand-logo" width="120" height="52" />
+        <span>CYBERTECH-FAMILY</span>
+      </a>
+      <nav aria-label="Primary">
+        <button
+          id="menuToggle"
+          class="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation"
+          aria-controls="mainMenu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+        <ul id="mainMenu" class="menu">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="complaints.html" class="active" aria-current="page">Complaints</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="page-hero reveal">
+        <p class="tag">Complaint Registration</p>
+        <h1>File a detailed client complaint.</h1>
+        <p class="lead">
+          Submit a concise case summary, declare whether proof is available, and complete
+          the registration fee via our crypto payment gateway. On submit you will receive a
+          unique Complaint ID / Tax ID to copy and retain.
+        </p>
+      </section>
+
+      <section class="complaint-grid reveal" aria-labelledby="complaint-form-heading">
+        <div class="contact-aside">
+          <h2 id="complaint-form-heading">Filing guidelines</h2>
+          <ul class="expect-list">
+            <li>Be factual, chronological, and concise</li>
+            <li>State clearly whether proof exists</li>
+            <li>Attach or describe evidence sources when available</li>
+            <li>Copy your Complaint ID / Tax ID after submit</li>
+            <li>Include the ID in any crypto payment memo or follow-up</li>
+          </ul>
+          <div class="contact-meta">
+            <p>
+              <span class="meta-label">Registration fee</span>
+              <span id="feeDisplay">0.015 BTC · 0.35 ETH · 450 USDT</span>
+            </p>
+            <p>
+              <span class="meta-label">Processing</span>
+              Intake review within one business day after payment confirmation
+            </p>
+          </div>
+        </div>
+
+        <form id="complaintForm" class="contact-form complaint-form" novalidate>
+          <input type="hidden" name="form-name" value="complaint" />
+          <input type="hidden" id="complaintService" name="service" value="" />
+
+          <label>
+            Full name
+            <input type="text" name="name" id="clientName" placeholder="Alex Rivera" autocomplete="name" required />
+          </label>
+
+          <label>
+            Work email
+            <input
+              type="email"
+              name="email"
+              id="clientEmail"
+              placeholder="alex@company.com"
+              autocomplete="email"
+              required
+            />
+          </label>
+
+          <label>
+            Organization
+            <input
+              type="text"
+              name="organization"
+              id="clientOrg"
+              placeholder="Northbound Systems"
+              autocomplete="organization"
+              required
+            />
+          </label>
+
+          <label>
+            Related service / capability
+            <select name="serviceSelect" id="serviceSelect" required>
+              <option value="">Select one</option>
+              <option value="Penetration Testing">Penetration Testing</option>
+              <option value="Detection Engineering">Detection Engineering</option>
+              <option value="Incident Response">Incident Response</option>
+              <option value="Data Recovery Support">Data Recovery Support</option>
+              <option value="Fund Tracing and Recovery">Fund Tracing &amp; Recovery</option>
+              <option value="External and Internal Penetration Testing">External &amp; Internal Penetration Testing</option>
+              <option value="Application Security Reviews">Application Security Reviews</option>
+              <option value="Cloud Security Assessments">Cloud Security Assessments</option>
+              <option value="Detection Engineering Sprint">Detection Engineering Sprint</option>
+              <option value="Incident Response Retainer">Incident Response Retainer</option>
+              <option value="Purple-Team Exercises">Purple-Team Exercises</option>
+              <option value="Other">Other / general complaint</option>
+            </select>
+          </label>
+
+          <label>
+            Complaint subject
+            <input
+              type="text"
+              name="subject"
+              id="complaintSubject"
+              placeholder="Brief title for the issue"
+              maxlength="120"
+              required
+            />
+          </label>
+
+          <label>
+            Detailed complaint
+            <textarea
+              name="details"
+              id="complaintDetails"
+              rows="6"
+              placeholder="Describe what happened, when, who was involved, impact, and desired outcome. Keep it clear and chronological."
+              required
+            ></textarea>
+          </label>
+
+          <label>
+            Concise summary (3–5 sentences)
+            <textarea
+              name="summary"
+              id="complaintSummary"
+              rows="3"
+              placeholder="A short executive summary of the complaint for intake triage."
+              required
+            ></textarea>
+          </label>
+
+          <fieldset class="proof-fieldset">
+            <legend>Proof of complaint</legend>
+            <p class="field-hint">State whether supporting proof exists for this complaint.</p>
+            <div class="radio-row">
+              <label class="radio-card">
+                <input type="radio" name="hasProof" value="yes" required />
+                <span>Yes — proof is available</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="hasProof" value="no" required />
+                <span>No — no proof at this time</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="hasProof" value="partial" required />
+                <span>Partial — limited evidence only</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label id="proofDetailsLabel">
+            Proof description / sources
+            <textarea
+              name="proofDetails"
+              id="proofDetails"
+              rows="3"
+              placeholder="If proof exists: logs, screenshots, ticket IDs, chain of custody notes, or storage links. If none, write N/A."
+            ></textarea>
+          </label>
+
+          <label>
+            Preferred contact method
+            <select name="contactMethod" id="contactMethod" required>
+              <option value="">Select one</option>
+              <option value="Email">Email</option>
+              <option value="Phone">Phone</option>
+              <option value="Secure portal">Secure portal</option>
+            </select>
+          </label>
+
+          <p class="form-note">
+            Submitting generates a Complaint ID / Tax ID. Copy it from the prompt and keep it for
+            payment reference and case tracking.
+          </p>
+
+          <button class="btn btn-primary" type="submit" id="complaintSubmit">
+            Submit complaint registration
+          </button>
+          <p class="form-status" id="complaintStatus" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+
+      <section class="crypto-gateway reveal" aria-labelledby="crypto-heading" id="payment">
+        <div class="section-head">
+          <p class="tag">Crypto payment gateway</p>
+          <h2 id="crypto-heading">Complete registration payment</h2>
+          <p class="lead">
+            Pay the registration fee using one of the supported networks. Include your
+            Complaint ID / Tax ID in the transfer memo when supported by your wallet.
+          </p>
+        </div>
+
+        <div class="crypto-panel">
+          <div class="crypto-assets" role="tablist" aria-label="Payment asset">
+            <button type="button" class="crypto-asset is-active" data-asset="btc" role="tab" aria-selected="true">
+              <span class="asset-code">BTC</span>
+              <span class="asset-amount">0.015 BTC</span>
+            </button>
+            <button type="button" class="crypto-asset" data-asset="eth" role="tab" aria-selected="false">
+              <span class="asset-code">ETH</span>
+              <span class="asset-amount">0.35 ETH</span>
+            </button>
+            <button type="button" class="crypto-asset" data-asset="usdt" role="tab" aria-selected="false">
+              <span class="asset-code">USDT</span>
+              <span class="asset-amount">450 USDT</span>
+            </button>
+          </div>
+
+          <div class="crypto-details">
+            <div class="crypto-row">
+              <span class="meta-label">Network</span>
+              <p id="cryptoNetwork">Bitcoin mainnet</p>
+            </div>
+            <div class="crypto-row">
+              <span class="meta-label">Amount due</span>
+              <p id="cryptoAmount">0.015 BTC</p>
+            </div>
+            <div class="crypto-row">
+              <span class="meta-label">Receiving wallet</span>
+              <div class="wallet-line">
+                <code id="cryptoAddress" class="wallet-address">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</code>
+                <button type="button" class="btn btn-ghost btn-small" id="copyAddress">Copy address</button>
+              </div>
+            </div>
+            <div class="crypto-row">
+              <span class="meta-label">Complaint ID / Tax ID</span>
+              <div class="wallet-line">
+                <code id="cryptoComplaintId" class="wallet-address">Submit the form to generate your ID</code>
+                <button type="button" class="btn btn-ghost btn-small" id="copyComplaintId" disabled>Copy ID</button>
+              </div>
+            </div>
+
+            <label class="tx-label">
+              Transaction hash (after payment)
+              <input
+                type="text"
+                id="txHash"
+                name="txHash"
+                placeholder="Paste tx hash / transaction ID from your wallet"
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </label>
+
+            <div class="crypto-actions">
+              <button type="button" class="btn btn-primary" id="confirmPayment">
+                Confirm payment submitted
+              </button>
+              <p class="form-note">
+                Replace demo wallet addresses with your live treasury wallets before production use.
+                Payments are verified against the network after you paste the transaction hash.
+              </p>
+            </div>
+            <p class="form-status" id="paymentStatus" role="status" aria-live="polite" hidden></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="logo.svg" alt="" class="brand-logo" width="72" height="32" aria-hidden="true" />
+          <div>
+            <strong>CyberTech-Family</strong>
+            <p>Cyber defense engineered for momentum.</p>
+          </div>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="services.html">Services</a>
+          <a href="complaints.html">Complaints</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <p class="footer-copy">&copy; 2026 CyberTech-Family. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
