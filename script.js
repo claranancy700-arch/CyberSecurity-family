@@ -4,9 +4,16 @@
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const desktopNavQuery = window.matchMedia("(min-width: 1025px)");
 
-  /* ---------- Site intro splash (every public page load) ---------- */
+  /* ---------- Site intro splash (home page only, each reload) ---------- */
   const pathName = (window.location.pathname || "").toLowerCase();
+  const fileName = pathName.split("/").pop() || "";
+  const isHomePage =
+    fileName === "" ||
+    fileName === "index.html" ||
+    fileName === "index.htm" ||
+    pathName.endsWith("/");
   const skipSplash =
+    !isHomePage ||
     document.body?.dataset?.noSplash === "1" ||
     pathName.includes("admin") ||
     pathName.includes("ctf%20loading") ||
