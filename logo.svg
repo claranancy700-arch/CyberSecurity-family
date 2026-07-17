@@ -1,51 +1,130 @@
-<svg width="360" height="140" viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle logoDesc">
-  <title id="logoTitle">Cybersecurity Family</title>
-  <desc id="logoDesc">CSF monogram with cyber-style vector accents.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 280" fill="none" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">CyberTech-Family</title>
+  <desc id="logoDesc">Circular emblem with bold C, t-cut dash through the right side, and bold F in metallic blue.</desc>
+
+  <!--
+    Metallic blue palette
+      steel light  #E8F1FA
+      steel mid    #9BB6D1
+      steel deep   #3D5A7A
+      chrome hi    #F5FAFF
+      cobalt       #2F6FED
+      azure        #5BA3F5
+      navy metal   #1A3A5C
+      ice text     #EAF3FC
+      bar accent   #4A8FE0
+    Emblem center 160,130 | outer R 110 | hole R 64
+  -->
+
   <defs>
-    <linearGradient id="csfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="45%" stop-color="#d7d7d7" />
-      <stop offset="100%" stop-color="#111111" />
+    <!-- Brushed metal ring: cool blue steel -->
+    <linearGradient id="ringMetal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5FAFF"/>
+      <stop offset="22%" stop-color="#C5D8EC"/>
+      <stop offset="48%" stop-color="#8AABC8"/>
+      <stop offset="72%" stop-color="#D0E2F4"/>
+      <stop offset="100%" stop-color="#5E82A6"/>
     </linearGradient>
-    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-      <stop offset="100%" stop-color="#2a2a2a" stop-opacity="0.95" />
+
+    <!-- Soft specular band across the ring -->
+    <radialGradient id="ringSheen" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#B8D4F0" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#1A3A5C" stop-opacity="0.25"/>
+    </radialGradient>
+
+    <!-- Chrome-blue C -->
+    <linearGradient id="cMetal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#D7E9FB"/>
+      <stop offset="70%" stop-color="#A9C8E8"/>
+      <stop offset="100%" stop-color="#6F97BE"/>
     </linearGradient>
-    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="1.8" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
+
+    <!-- Deep metallic cobalt F -->
+    <linearGradient id="fFill" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="28%" stop-color="#cfcfcf"/>
+      <stop offset="62%" stop-color="#949494"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+
+    <!-- Edge highlight on F -->
+    <linearGradient id="fEdge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E7F3FF" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#5BA3F5" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0D2848" stop-opacity="0.35"/>
+    </linearGradient>
+
+    <!-- Wordmark bar -->
+    <linearGradient id="barMetal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7EB6F5"/>
+      <stop offset="50%" stop-color="#3D7ED6"/>
+      <stop offset="100%" stop-color="#6FA8E8"/>
+    </linearGradient>
+
+    <!--
+      Ring mask: white keeps fill, black cuts out.
+      Center 160,130 | outer R 110 | hole R 64 | dash through right side
+    -->
+    <mask
+      id="ringMask"
+      maskUnits="userSpaceOnUse"
+      x="40"
+      y="10"
+      width="300"
+      height="240"
+    >
+      <rect x="40" y="10" width="300" height="240" fill="#000000"/>
+      <circle cx="160" cy="130" r="110" fill="#FFFFFF"/>
+      <circle cx="160" cy="130" r="64" fill="#000000"/>
+      <rect x="208" y="113" width="100" height="35" rx="2" fill="#000000"/>
+    </mask>
   </defs>
 
-  <g fill="none" stroke="url(#lineGradient)" stroke-width="3" stroke-linecap="round" opacity="0.8">
-    <path d="M22 70h42" />
-    <path d="M296 70h42" />
-    <path d="M36 44l22 0" />
-    <path d="M302 96l22 0" />
+  <!-- Ring body: steel blue metal + sheen (same mask for both) -->
+  <g id="emblem-ring" mask="url(#ringMask)">
+    <circle id="ring" cx="160" cy="130" r="110" fill="url(#ringMetal)"/>
+    <circle cx="160" cy="130" r="110" fill="url(#ringSheen)"/>
   </g>
 
-  <g fill="none" stroke="url(#lineGradient)" stroke-width="2.5" opacity="0.72">
-    <path d="M74 32c20-12 48-18 106-18" />
-    <path d="M286 108c-20 12-48 18-106 18" />
-  </g>
-
-  <circle cx="180" cy="70" r="52" fill="none" stroke="url(#lineGradient)" stroke-opacity="0.45" stroke-width="1.6" />
-  <circle cx="180" cy="70" r="42" fill="none" stroke="url(#lineGradient)" stroke-opacity="0.3" stroke-width="1.4" />
-
+  <!-- Bold C in the hole -->
   <text
-    x="180"
-    y="84"
+    id="letter-c"
+    x="156"
+    y="184"
     text-anchor="middle"
-    fill="url(#csfGradient)"
-    font-family="system-ui, -apple-system, Segoe UI, sans-serif"
-    font-size="72"
-    font-weight="800"
-    letter-spacing="6"
-    filter="url(#softGlow)"
-  >
-    CSF
-  </text>
+    fill="url(#cMetal)"
+    font-family="'Raleway Black', Haettenschweiler, sans-serif"
+    font-size="150"
+    font-weight="1000"
+  >C</text>
+
+  <!-- Bold F -->
+  <text
+    id="letter-f"
+    x="270"
+    y="234"
+    text-anchor="start"
+    fill="url(#fFill)"
+    font-family="'Raleway Black', Haettenschweiler, sans-serif"
+    font-size="280"
+    font-weight="1000"
+  >F</text>
+
+  <!-- Wordmark (remove this group for icon-only) -->
+  <g id="wordmark">
+    <rect x="268" y="248" width="104" height="5" rx="2.5" fill="url(#barMetal)"/>
+    <text
+      id="brand"
+      x="310"
+      y="278"
+      text-anchor="middle"
+      fill="#EAF3FC"
+      font-family="'Arial Black', Impact, 'Segoe UI', sans-serif"
+      font-size="22"
+      font-weight="800"
+      letter-spacing="3"
+    >CYBERTECH-FAMILY</text>
+  </g>
 </svg>

@@ -1,6 +1,12 @@
-# Cybersecurity Family
+# CyberTech-Family
 
-Professional static website for Cybersecurity Family — offensive testing, detection engineering, incident response, and recovery support.
+Professional static website for **CyberTech-Family** — offensive testing, detection engineering, incident response, and recovery support.
+
+## Brand
+
+- Name: **CyberTech-Family** / display **CYBERTECH-FAMILY**
+- Logo: `logo.svg` (metallic blue monogram)
+- Preview lockup: `logo-cybertech-family.jpg`
 
 ## Pages
 
@@ -19,6 +25,6 @@ Open `http://127.0.0.1:5500`.
 
 ## Deploy
 
-This is a static site. Deploy the project root to Netlify, Cloudflare Pages, GitHub Pages, or any static host.
+Static site. Deploy the project root to Netlify, Cloudflare Pages, GitHub Pages, or any static host.
 
-Contact form uses Netlify Forms attributes (`data-netlify`). On Netlify, submissions are captured automatically. On other hosts, wire the form to your preferred endpoint.
+Contact form uses Netlify Forms attributes (`data-netlify`). On Netlify, submissions are captured automatically.
