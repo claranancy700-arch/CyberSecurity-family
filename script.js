@@ -345,7 +345,7 @@
     },
   };
 
-  // Stored drafts for a future admin intake console
+  // Local fallback key if API is offline
   const COMPLAINT_STORE_KEY = "ctf_complaint_registrations";
 
   let activeComplaintId = "";
@@ -363,7 +363,7 @@
     return `CTF-${y}${m}${d}-${rand}-TAX${checksum}`;
   };
 
-  const saveRegistrationDraft = (record) => {
+  const saveLocalFallback = (record) => {
     try {
       if (!record.localId) {
         record.localId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -381,8 +381,30 @@
       }
       localStorage.setItem(COMPLAINT_STORE_KEY, JSON.stringify(existing.slice(0, 100)));
     } catch (_err) {
-      // Storage may be blocked; non-fatal for client UX
+      // ignore
     }
+  };
+
+  const saveRegistrationDraft = async (record) => {
+    if (!record.localId) {
+      record.localId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+    saveLocalFallback(record);
+
+    if (window.CTF_API && typeof window.CTF_API.submit === "function") {
+      try {
+        const res = await window.CTF_API.submit(record);
+        if (res?.registration) {
+          Object.assign(record, res.registration);
+          saveLocalFallback(record);
+        }
+        return { ok: true, via: res?.storage || "api", registration: record };
+      } catch (err) {
+        console.warn("API save failed, kept local draft:", err.message);
+        return { ok: false, via: "local", error: err.message, registration: record };
+      }
+    }
+    return { ok: true, via: "local", registration: record };
   };
 
   const copyText = async (value, successMessage, statusEl) => {
@@ -437,7 +459,7 @@
   const agentContactPanel = document.getElementById("agentContactPanel");
 
   if (complaintForm) {
-    complaintForm.addEventListener("submit", (event) => {
+    complaintForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       if (!complaintForm.checkValidity()) {
@@ -476,7 +498,7 @@
         txHash: "",
       };
 
-      saveRegistrationDraft(pendingRegistration);
+      const saveResult = await saveRegistrationDraft(pendingRegistration);
 
       // Show agent contact list (email + WhatsApp) — ID is generated on payment confirm
       if (agentContactPanel) {
@@ -487,8 +509,14 @@
       if (complaintStatus) {
         complaintStatus.hidden = false;
         complaintStatus.className = "form-status is-success";
+        const via =
+          saveResult.via === "local"
+            ? " (saved locally — start the API server for shared admin access)"
+            : " (synced to server)";
         complaintStatus.textContent =
-          "Registration submitted. Contact an agent below, then complete payment to generate your Complaint ID / Tax ID.";
+          "Registration submitted" +
+          via +
+          ". Contact an agent below, then complete payment to generate your Complaint ID / Tax ID.";
       }
     });
   }
@@ -542,7 +570,7 @@
   }
 
   if (confirmPaymentBtn) {
-    confirmPaymentBtn.addEventListener("click", () => {
+    confirmPaymentBtn.addEventListener("click", async () => {
       const tx = txHashInput ? txHashInput.value.trim() : "";
 
       if (!formSubmitted) {
@@ -581,7 +609,7 @@
         pendingRegistration.status = "payment_submitted";
         pendingRegistration.txHash = tx;
         pendingRegistration.paidAt = new Date().toISOString();
-        saveRegistrationDraft(pendingRegistration);
+        await saveRegistrationDraft(pendingRegistration);
       }
 
       window.prompt(

@@ -1,8 +1,8 @@
 (() => {
-  const STORE_KEY = "ctf_complaint_registrations";
   const SESSION_KEY = "ctf_admin_session";
-  // Change this before production use
-  const ADMIN_KEY = "CTF-Admin-2026";
+  const SESSION_KEY_VALUE = "ctf_admin_key";
+  // Fallback only if api.js not loaded
+  const FALLBACK_KEY = "CTF-Admin-2026";
 
   const loginView = document.getElementById("adminLogin");
   const appView = document.getElementById("adminApp");
@@ -21,27 +21,27 @@
   const detailContent = document.getElementById("detailContent");
   const detailFields = document.getElementById("detailFields");
   const detailStatus = document.getElementById("detailStatus");
+  const storageBadge = document.getElementById("storageBadge");
+  const storageBadgeTop = document.getElementById("storageBadgeTop");
 
   let selectedLocalId = null;
+  let cache = [];
 
-  const readStore = () => {
-    try {
-      const raw = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
-      return Array.isArray(raw) ? raw : [];
-    } catch (_err) {
-      return [];
+  const expectedKey = () =>
+    (window.CTF_API && window.CTF_API.DEFAULT_ADMIN_KEY) || FALLBACK_KEY;
+
+  const getAdminKey = () => sessionStorage.getItem(SESSION_KEY_VALUE) || "";
+
+  const isAuthed = () => sessionStorage.getItem(SESSION_KEY) === "1" && Boolean(getAdminKey());
+
+  const setAuthed = (on, key = "") => {
+    if (on) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      sessionStorage.setItem(SESSION_KEY_VALUE, key);
+    } else {
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY_VALUE);
     }
-  };
-
-  const writeStore = (rows) => {
-    localStorage.setItem(STORE_KEY, JSON.stringify(rows.slice(0, 200)));
-  };
-
-  const isAuthed = () => sessionStorage.getItem(SESSION_KEY) === "1";
-
-  const setAuthed = (on) => {
-    if (on) sessionStorage.setItem(SESSION_KEY, "1");
-    else sessionStorage.removeItem(SESSION_KEY);
   };
 
   const showApp = (on) => {
@@ -69,10 +69,39 @@
     return map[status] || status || "Unknown";
   };
 
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  const setDetailMessage = (text, ok = true) => {
+    if (!detailStatus) return;
+    detailStatus.hidden = false;
+    detailStatus.className = `form-status ${ok ? "is-success" : "is-error"}`;
+    detailStatus.textContent = text;
+  };
+
+  const updateStats = (rows) => {
+    if (statTotal) statTotal.textContent = String(rows.length);
+    if (statAwaiting) {
+      statAwaiting.textContent = String(rows.filter((r) => r.status === "awaiting_payment").length);
+    }
+    if (statPayment) {
+      statPayment.textContent = String(
+        rows.filter((r) => r.status === "payment_submitted" || r.status === "verified").length
+      );
+    }
+    if (statAdmitted) {
+      statAdmitted.textContent = String(rows.filter((r) => r.status === "admitted").length);
+    }
+  };
+
   const getFiltered = () => {
     const status = statusFilter?.value || "all";
     const q = (searchInput?.value || "").trim().toLowerCase();
-    return readStore().filter((row) => {
+    return cache.filter((row) => {
       if (status !== "all" && row.status !== status) return false;
       if (!q) return true;
       const hay = [
@@ -93,24 +122,8 @@
     });
   };
 
-  const updateStats = (rows) => {
-    if (statTotal) statTotal.textContent = String(rows.length);
-    if (statAwaiting) {
-      statAwaiting.textContent = String(rows.filter((r) => r.status === "awaiting_payment").length);
-    }
-    if (statPayment) {
-      statPayment.textContent = String(
-        rows.filter((r) => r.status === "payment_submitted" || r.status === "verified").length
-      );
-    }
-    if (statAdmitted) {
-      statAdmitted.textContent = String(rows.filter((r) => r.status === "admitted").length);
-    }
-  };
-
   const renderTable = () => {
-    const all = readStore();
-    updateStats(all);
+    updateStats(cache);
     const rows = getFiltered();
 
     if (!tableBody) return;
@@ -123,8 +136,8 @@
       .map((row) => {
         const selected = row.localId === selectedLocalId ? " is-selected" : "";
         return `
-          <tr class="${selected}" data-local-id="${row.localId || ""}">
-            <td>${formatDate(row.submittedAt || row.paidAt)}</td>
+          <tr class="${selected}" data-local-id="${escapeHtml(row.localId || "")}">
+            <td>${escapeHtml(formatDate(row.submittedAt || row.paidAt))}</td>
             <td>
               <strong>${escapeHtml(row.name || "—")}</strong><br />
               <span style="color:var(--muted)">${escapeHtml(row.email || "")}</span>
@@ -140,21 +153,13 @@
       .join("");
   };
 
-  const escapeHtml = (value) =>
-    String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-
   const field = (label, value) => {
     if (value === undefined || value === null || value === "") return "";
     return `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(value))}</dd></div>`;
   };
 
   const renderDetail = () => {
-    const rows = readStore();
-    const row = rows.find((r) => r.localId === selectedLocalId);
+    const row = cache.find((r) => r.localId === selectedLocalId);
 
     if (!row) {
       if (detailEmpty) detailEmpty.hidden = false;
@@ -189,41 +194,66 @@
     }
   };
 
-  const setDetailMessage = (text, ok = true) => {
-    if (!detailStatus) return;
-    detailStatus.hidden = false;
-    detailStatus.className = `form-status ${ok ? "is-success" : "is-error"}`;
-    detailStatus.textContent = text;
-  };
-
-  const updateSelected = (patch) => {
-    const rows = readStore();
-    const idx = rows.findIndex((r) => r.localId === selectedLocalId);
-    if (idx < 0) {
-      setDetailMessage("Record not found.", false);
+  const loadRegistrations = async () => {
+    if (!window.CTF_API) {
+      setDetailMessage("api.js failed to load.", false);
       return;
     }
-    rows[idx] = { ...rows[idx], ...patch, updatedAt: new Date().toISOString() };
-    writeStore(rows);
-    renderTable();
-    renderDetail();
-    setDetailMessage("Registration updated.");
+    try {
+      const data = await window.CTF_API.list(getAdminKey(), {
+        status: "all",
+        q: "",
+      });
+      cache = data.registrations || [];
+      const modeLabel = `Storage: ${data.storage || "unknown"}`;
+      if (storageBadge) storageBadge.textContent = modeLabel;
+      if (storageBadgeTop) storageBadgeTop.textContent = modeLabel;
+      renderTable();
+      renderDetail();
+    } catch (err) {
+      cache = [];
+      renderTable();
+      if (loginStatus && !isAuthed()) {
+        loginStatus.hidden = false;
+        loginStatus.className = "form-status is-error";
+        loginStatus.textContent = err.message || "Failed to reach API";
+      } else {
+        setDetailMessage(
+          (err.message || "Failed to load") +
+            " — start the API with npm run dev (or deploy Netlify functions).",
+          false
+        );
+      }
+    }
   };
 
   if (loginForm) {
-    loginForm.addEventListener("submit", (event) => {
+    loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const key = passwordInput?.value || "";
-      if (key === ADMIN_KEY) {
-        setAuthed(true);
+
+      // Verify key against API (any authorized list call)
+      try {
+        if (!window.CTF_API) throw new Error("API client missing");
+        // Quick health first
+        try {
+          await window.CTF_API.health();
+        } catch (_e) {
+          throw new Error("API offline. Run npm run dev (port 8787) or deploy functions.");
+        }
+        await window.CTF_API.list(key, { status: "all" });
+        setAuthed(true, key);
         showApp(true);
-        renderTable();
-        renderDetail();
         if (loginStatus) loginStatus.hidden = true;
-      } else if (loginStatus) {
-        loginStatus.hidden = false;
-        loginStatus.className = "form-status is-error";
-        loginStatus.textContent = "Invalid access key.";
+        await loadRegistrations();
+      } catch (err) {
+        setAuthed(false);
+        if (loginStatus) {
+          loginStatus.hidden = false;
+          loginStatus.className = "form-status is-error";
+          loginStatus.textContent =
+            err.status === 401 ? "Invalid access key." : err.message || "Login failed";
+        }
       }
     });
   }
@@ -231,17 +261,17 @@
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     setAuthed(false);
     selectedLocalId = null;
+    cache = [];
     showApp(false);
     if (passwordInput) passwordInput.value = "";
   });
 
   document.getElementById("refreshBtn")?.addEventListener("click", () => {
-    renderTable();
-    renderDetail();
+    loadRegistrations();
   });
 
   document.getElementById("exportBtn")?.addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(readStore(), null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(cache, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -261,9 +291,27 @@
     renderDetail();
   });
 
-  document.getElementById("verifyBtn")?.addEventListener("click", () => {
+  const patchSelected = async (patch) => {
     if (!selectedLocalId) return;
-    updateSelected({
+    try {
+      const res = await window.CTF_API.update(getAdminKey(), {
+        localId: selectedLocalId,
+        ...patch,
+      });
+      const updated = res.registration;
+      const idx = cache.findIndex((r) => r.localId === selectedLocalId);
+      if (idx >= 0) cache[idx] = updated;
+      else cache.unshift(updated);
+      renderTable();
+      renderDetail();
+      setDetailMessage("Registration updated on server.");
+    } catch (err) {
+      setDetailMessage(err.message || "Update failed", false);
+    }
+  };
+
+  document.getElementById("verifyBtn")?.addEventListener("click", () => {
+    patchSelected({
       status: "verified",
       verifiedAt: new Date().toISOString(),
       adminNotes: "Payment verified by admin.",
@@ -271,8 +319,7 @@
   });
 
   document.getElementById("admitBtn")?.addEventListener("click", () => {
-    if (!selectedLocalId) return;
-    updateSelected({
+    patchSelected({
       status: "admitted",
       admittedAt: new Date().toISOString(),
       adminNotes: "Registration admitted by admin.",
@@ -280,30 +327,36 @@
   });
 
   document.getElementById("rejectBtn")?.addEventListener("click", () => {
-    if (!selectedLocalId) return;
-    updateSelected({
+    patchSelected({
       status: "rejected",
       rejectedAt: new Date().toISOString(),
       adminNotes: "Registration rejected by admin.",
     });
   });
 
-  document.getElementById("deleteBtn")?.addEventListener("click", () => {
+  document.getElementById("deleteBtn")?.addEventListener("click", async () => {
     if (!selectedLocalId) return;
-    if (!window.confirm("Delete this registration permanently from this browser store?")) return;
-    const rows = readStore().filter((r) => r.localId !== selectedLocalId);
-    writeStore(rows);
-    selectedLocalId = null;
-    renderTable();
-    renderDetail();
-    setDetailMessage("Registration deleted.");
+    if (!window.confirm("Delete this registration permanently from the server store?")) return;
+    try {
+      await window.CTF_API.remove(getAdminKey(), selectedLocalId);
+      cache = cache.filter((r) => r.localId !== selectedLocalId);
+      selectedLocalId = null;
+      renderTable();
+      renderDetail();
+      setDetailMessage("Registration deleted.");
+    } catch (err) {
+      setDetailMessage(err.message || "Delete failed", false);
+    }
   });
 
   // Boot
   if (isAuthed()) {
     showApp(true);
-    renderTable();
+    loadRegistrations();
   } else {
     showApp(false);
   }
+
+  // Hint default key in console for operators (not on page for security)
+  console.info("CTF Admin: set ADMIN_KEY on the server. Default local key is CTF-Admin-2026");
 })();

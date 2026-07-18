@@ -1,0 +1,20 @@
+{
+  "name": "cybertech-family",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CyberTech-Family static site with registration API and admin",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "db:init": "node scripts/init-db.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -41,8 +41,10 @@
           <p class="form-status" id="loginStatus" role="status" aria-live="polite" hidden></p>
         </form>
         <p class="admin-login-note">
-          Client-side gate for this static site. Change the key in <code>admin.js</code> before production.
+          Requires the registration API (<code>npm run dev</code> locally, or Netlify Functions in production).
+          Default local key: <code>CTF-Admin-2026</code> — set <code>ADMIN_KEY</code> in env for production.
         </p>
+        <p class="admin-login-note" id="storageBadge">Storage: —</p>
         <a class="admin-back-link" href="index.html">← Back to site</a>
       </div>
     </section>
@@ -58,6 +60,7 @@
           </div>
         </div>
         <div class="admin-topbar-actions">
+          <span class="admin-storage-pill" id="storageBadgeTop">Storage: —</span>
           <button type="button" class="btn btn-ghost btn-small" id="refreshBtn">Refresh</button>
           <button type="button" class="btn btn-ghost btn-small" id="exportBtn">Export JSON</button>
           <button type="button" class="btn btn-ghost btn-small" id="logoutBtn">Sign out</button>
@@ -148,6 +151,7 @@
       </main>
     </div>
 
+    <script src="api.js" defer></script>
     <script src="admin.js" defer></script>
   </body>
 </html>

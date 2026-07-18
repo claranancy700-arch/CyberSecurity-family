@@ -6,3 +6,8 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+node_modules/
+.env
+.env.local
+data/registrations.json
+.netlify/
