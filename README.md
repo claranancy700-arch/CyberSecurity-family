@@ -1,6 +1,6 @@
 # CyberTech-Family
 
-Professional static website for **CyberTech-Family** — offensive testing, detection engineering, incident response, recovery support, and complaint registration with admin intake.
+Professional static website for **CyberTech-Family** — offensive testing, IP Tracking and Tracing, incident response, recovery support, and complaint registration with admin intake.
 
 ## Brand
 
