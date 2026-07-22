@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "db:init": "node scripts/init-db.js"
+    "db:init": "node scripts/init-db.js",
+    "vercel:dev": "npx vercel dev",
+    "deploy": "npx vercel --prod"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",

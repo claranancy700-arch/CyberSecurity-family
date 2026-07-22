@@ -1,6 +1,6 @@
 /**
  * Local API server for CyberTech-Family registrations.
- * Mirrors Netlify function routes at /api/registrations
+ * Mirrors Vercel /api/registrations for local development.
  *
  *   npm install
  *   npm run dev
@@ -17,7 +17,7 @@ const {
   updateRegistration,
   deleteRegistration,
   storageMode,
-} = require("./netlify/functions/_lib/store");
+} = require("./api/lib/store");
 
 const app = express();
 const PORT = Number(process.env.PORT || 8787);

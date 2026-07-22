@@ -11,3 +11,4 @@ node_modules/
 .env.local
 data/registrations.json
 .netlify/
+.vercel/

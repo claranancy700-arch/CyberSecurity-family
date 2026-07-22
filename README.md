@@ -47,21 +47,35 @@ Copy `.env.example` → `.env` to change `ADMIN_KEY` or add Neon.
 npm run db:init
 ```
 
-## Production (Netlify)
+## Production (Vercel)
 
-1. Deploy the repo to Netlify (`netlify.toml` included).
-2. Set environment variables:
+1. Push this repo to GitHub (already linked if using existing remote).
+2. In [Vercel](https://vercel.com): **Add New Project** → import the repo.
+3. Framework preset: **Other** (static HTML + `/api` serverless).
+4. Root directory: project root (where `vercel.json` and `index.html` live).
+5. Set environment variables:
    - `ADMIN_KEY` — strong secret for admin login + API
-   - `DATABASE_URL` — Neon pooled connection string (recommended)
-3. `/api/*` rewrites to Netlify Functions.
-4. Open `https://your-site.netlify.app/admin.html`
+   - `DATABASE_URL` — Neon pooled connection string (recommended for production)
+6. Deploy.
+7. Open `https://your-project.vercel.app/` and `https://your-project.vercel.app/admin.html`
+
+### CLI deploy (optional)
+
+```bash
+npx vercel
+npx vercel --prod
+npx vercel env add ADMIN_KEY
+npx vercel env add DATABASE_URL
+```
 
 ### Neon setup (recommended)
 
 1. Create a free project at [neon.tech](https://neon.tech).
 2. Copy the **pooled** connection string.
-3. Set `DATABASE_URL` in Netlify (and local `.env`).
+3. Set `DATABASE_URL` in Vercel Project Settings → Environment Variables (and local `.env`).
 4. Run `npm run db:init` once with that env, or let the API auto-create the table on first request.
+
+Without Neon, serverless file storage is ephemeral — **use Neon for real production data**.
 
 ## Splash intro
 
@@ -69,7 +83,7 @@ Home page only. Stays until **hold & swipe up** (or Arrow Up / Enter).
 
 ## Complaint → Admin flow
 
-1. Client submits complaint on `complaints.html` → API `POST /api/registrations`
+1. Client submits complaint on `complaints.html` → `POST /api/registrations`
 2. Client pays crypto + confirms → status `payment_submitted` + Complaint ID
 3. Admin signs in → lists cases from API
 4. Admin **Verify payment** / **Admit** / **Reject** / **Delete**
@@ -84,8 +98,10 @@ Home page only. Stays until **hold & swipe up** (or Arrow Up / Enter).
 | PATCH | `/api/registrations` | `X-Admin-Key` | Update status/notes |
 | DELETE | `/api/registrations` | `X-Admin-Key` | Delete registration |
 
+Vercel serves `api/registrations.js` as a serverless function at `/api/registrations`.  
+Local `npm run dev` mirrors the same routes via Express.
+
 ## Security notes
 
-- Admin key is a shared secret (fine for small ops; use a strong env value in production).
-- Without Neon, Netlify function file storage is ephemeral — use Neon for production.
+- Admin key is a shared secret (use a strong `ADMIN_KEY` in Vercel production).
 - Never commit `.env`.

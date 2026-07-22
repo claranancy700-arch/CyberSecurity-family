@@ -1,7 +1,7 @@
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const { listRegistrations, storageMode } = require("../netlify/functions/_lib/store");
+const { listRegistrations, storageMode } = require("../api/lib/store");
 
 async function main() {
   const mode = storageMode();

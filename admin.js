@@ -220,7 +220,7 @@
       } else {
         setDetailMessage(
           (err.message || "Failed to load") +
-            " — start the API with npm run dev (or deploy Netlify functions).",
+            " — start the API with npm run dev (or deploy to Vercel).",
           false
         );
       }

@@ -5,7 +5,7 @@
   const DEFAULT_ADMIN_KEY = "CTF-Admin-2026";
 
   function apiBase() {
-    // Prefer same-origin Netlify redirects / Express /api
+    // Prefer same-origin Vercel /api or Express /api
     // When opened as file:// fall back to local API
     if (location.protocol === "file:") {
       return "http://127.0.0.1:8787/api";
